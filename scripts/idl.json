@@ -1,0 +1,111 @@
+{
+  "address": "8EL9PCpkZddir83rkbxvsNK8eeBhrjHJTqzjYryUbnng",
+  "metadata": {
+    "name": "audit_merkle_anchor",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "submit_root",
+      "discriminator": [
+        15,
+        86,
+        198,
+        221,
+        22,
+        34,
+        184,
+        178
+      ],
+      "accounts": [
+        {
+          "name": "root_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  101,
+                  114,
+                  107,
+                  108,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "user"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "root",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "RootAccount",
+      "discriminator": [
+        236,
+        210,
+        60,
+        194,
+        63,
+        203,
+        47,
+        119
+      ]
+    }
+  ],
+  "types": [
+    {
+      "name": "RootAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "root",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          },
+          {
+            "name": "user",
+            "type": "pubkey"
+          }
+        ]
+      }
+    }
+  ]
+}
