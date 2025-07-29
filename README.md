@@ -58,7 +58,7 @@ This system collects Windows Event Logs (Application, System, and Security), cre
 ### 1. **Install Solana & Anchor (in WSL)**
 ```bash
 # In WSL Ubuntu
-curl -sSfL https://release.solana.com/v1.18.11/install | sh
+curl --proto '=https' --tlsv1.2 -sSfL https://solana-install.solana.workers.dev | bash
 cargo install --git https://github.com/coral-xyz/anchor avm --locked --force
 avm install latest
 avm use latest
