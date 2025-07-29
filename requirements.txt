@@ -1,4 +1,4 @@
 pymerkle
-pycryptodome
 solana
 solders
+streamlit
