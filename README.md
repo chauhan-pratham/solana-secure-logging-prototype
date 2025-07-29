@@ -1,57 +1,61 @@
-# Plug and Play Audit Addon
+# Solana Secure Logging Prototype
 
-A blockchain-integrated, tamper-evident logging and audit system for Windows endpoints, featuring:
-- Secure log collection
-- Cryptographic signing
-- Merkle tree aggregation
-- On-chain anchoring of Merkle roots to Solana
-- Modern Streamlit web UI for all operations
+A secure Windows event log collection and verification system that uses Merkle trees and Solana blockchain for tamper-evident logging.
 
----
+## Overview
 
-## 🚀 Project Overview
-
-This system enables:
-- **Secure log collection** from Windows endpoints
-- **Cryptographic signing** of logs for authenticity
-- **Merkle tree aggregation** for tamper-evident batching
-- **On-chain anchoring** of Merkle roots to Solana (via Anchor)
-- **Modern Streamlit web UI** for all operations
+This system collects Windows Event Logs (Application, System, and Security), creates cryptographic proofs using Merkle trees, and anchors these proofs on the Solana blockchain for immutable verification.
 
 ---
 
-## ✨ Features
-- Collects and signs Windows Event Logs
-- Builds Merkle trees and submits roots to Solana
-- Minimal, summary-only output for clarity
-- Automatic syncing of wallet/IDL from WSL before submission
+## Features
+
+- **Automated Log Collection**
+  - Collects Windows Event Logs (Application, System, and Security)
+  - Supports last 100 events from each log type
+  - Automatic timestamping of log collections
+
+- **Secure Processing**
+  - Converts logs to JSON format for standardization
+  - Creates individual hashes for each log entry
+  - Builds Merkle trees for efficient verification
+  - Stores all intermediate hashes for future validation
+
+- **Blockchain Integration**
+  - Anchors Merkle roots to Solana blockchain
+  - Uses Solana's local testnet for development
+  - Implements proper transaction handling using solders library
 
 ---
 
-## 🛠️ Setup & Installation
+## Project Structure
 
-### 1. **Prerequisites**
-- **Python 3.10+**
-- **PowerShell** (for log collection on Windows)
-- **WSL (Ubuntu)** for Solana/Anchor development
-- **Solana CLI** ([Install Guide](https://docs.solana.com/cli/install-solana-cli-tools))
-- **Anchor CLI** ([Install Guide](https://book.anchor-lang.com/chapter_2/installation.html))
-
-### 2. **Clone the Repository**
-```bash
-cd <your-projects-folder>
-git clone <repo-url> plug_and_play_audit_addon
-cd plug_and_play_audit_addon
+```
+├── powershell/                 # PowerShell scripts
+│   └── collect_logs.ps1        # Event log collection script
+├── scripts/                    # Python scripts
+│   ├── app.py                 # Streamlit web application
+│   ├── hash_and_build_merkle.py  # Merkle tree builder
+│   ├── submit_root.py         # Blockchain submission
+│   ├── verify_log.py          # Log verification script
+│   ├── sync.py               # Synchronization utility
+│   ├── idl.json              # Solana program interface
+│   └── wallet.json           # Solana wallet configuration
+├── README.md                       # Project readme
+└── requirements.txt                # Python dependencies
 ```
 
-### 3. **Install Python Dependencies**
-```bash
-pip install -r requirements.txt
-# If not present, install manually:
-pip install streamlit pymerkle solana solders pycryptodome
-```
+## Prerequisites
 
-### 4. **Install Solana & Anchor (in WSL)**
+- Windows operating system
+- Python 3.10 or higher
+- PowerShell with administrator rights (for Security log access)
+- Solana CLI tools
+- Local Solana testnet (for development)
+
+## 🔧 Solana & Anchor Setup (WSL)
+
+### 1. **Install Solana & Anchor (in WSL)**
 ```bash
 # In WSL Ubuntu
 curl -sSfL https://release.solana.com/v1.18.11/install | sh
@@ -60,7 +64,7 @@ avm install latest
 avm use latest
 ```
 
-### 5. **Start Solana Localnet & Deploy Anchor Program**
+### 2. **Start Solana Localnet & Deploy Anchor Program**
 ```bash
 # In WSL Ubuntu
 cd ~/plug_and_play_audit_addon/audit_merkle_anchor
@@ -68,43 +72,59 @@ anchor localnet
 # (or: solana-test-validator & anchor deploy)
 ```
 
-### 6. **Sync Wallet/IDL from WSL to Windows**
-- Use the Streamlit UI “Sync from WSL” button, or run:
+### 3. **Sync Wallet/IDL from WSL to Windows**
 ```bash
-python scripts/sync_wsl_files.py
+python scripts/sync.py
 ```
 
 ---
 
-## 🖥️ Usage: Main Workflow
+## 💻 Usage: Main Workflow
 
-### **Start the Streamlit App**
+### Method 1: Using the Web Interface (Recommended)
+
+1. **Start the Web Interface**
 ```bash
 streamlit run scripts/app.py
 ```
 
-### **Workflow Steps (via UI):**
-1. **Collect Logs**: Gathers Windows Event Logs
-2. **Sign Logs**: Signs logs with endpoint key
-3. **Build Merkle Tree**: Aggregates logs, generates Merkle root
-4. **Submit Merkle Root**: Syncs wallet/IDL, submits root to Solana
-5. **Run All Steps**: Executes the entire pipeline in order
+2. **Using the GUI**
+- Click "Collect Logs" to gather Windows Event Logs (requires administrator access)
+- Click "Build Merkle Tree" to process and hash the collected logs
+- Click "Submit to Blockchain" to anchor the Merkle root on Solana
+- Use "Verify Logs" tab to check log integrity
+- View operation history in the "History" tab
 
-- **All steps show only summary lines and errors for clarity.**
+### Method 2: Using Command Line
+
+If you prefer using command-line tools directly:
+
+1. **Collect Logs**
+```powershell
+# Run as administrator for full log access
+.\powershell\collect_logs.ps1
+```
+
+2. **Process Logs and Build Merkle Tree**
+```bash
+python scripts/hash_and_build_merkle.py
+```
+
+3. **Submit to Blockchain**
+```bash
+python scripts/submit_root.py
+```
+
+Note: The GUI method is recommended as it provides:
+- Interactive workflow guidance
+- Real-time operation status
+- Built-in error handling
+- Visual verification tools
+- Operation history tracking
 
 ---
 
-## 🗂️ File Structure (Key Files)
-- `scripts/app.py` — Streamlit web app
-- `scripts/sync_wsl_files.py` — Syncs wallet/IDL from WSL
-- `scripts/submit_root.py` — Submits Merkle root to Solana
-- `scripts/hash_and_build_merkle.py` — Builds Merkle tree
-- `scripts/sign_latest_log.py` — Signs logs
-- `logs/` — Collected logs and Merkle roots
-
----
-
-## 🧠 Troubleshooting
+## 😠 Troubleshooting
 - **Solana errors:** Ensure validator is running (`anchor localnet` or `solana-test-validator`).
 - **Sync errors:** Make sure WSL is running and files exist at the expected paths.
 - **Streamlit UI not updating:** Restart Streamlit after code changes.
@@ -112,10 +132,10 @@ streamlit run scripts/app.py
 
 ---
 
-## 📚 References
+## 📙 References
 - [Solana Cookbook](https://solanacookbook.com/)
 - [Anchor Book](https://book.anchor-lang.com/)
-- [pymerkle](https://github.com/LucaCappelletti94/pymerkle)
+- [pymerkle](https://github.com/fmerg/pymerkle/)
 - [Streamlit](https://streamlit.io/)
 
 ---
@@ -128,4 +148,24 @@ streamlit run scripts/app.py
 
 ---
 
-**For questions, improvements, or demo requests, contact the project maintainer.**
+## Security Considerations
+
+- Run PowerShell as administrator to access Security logs
+- Merkle trees provide cryptographic proof of log integrity
+- Each log entry is individually hashed for verification
+- Blockchain anchoring prevents tampering with historical data
+
+## Logs Structure
+
+The system creates three types of log files:
+- `application_log_[timestamp].json`
+- `system_log_[timestamp].json`
+- `security_log_[timestamp].json`
+
+Each log file contains up to 100 most recent events from their respective Windows Event Log categories.
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Submit a pull request
