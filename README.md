@@ -274,7 +274,7 @@ solana program show <YourProgramID>
 ### 1️⃣ Clone the Repository
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/chauhan-pratham/solana-secure-logging-prototype
 cd plug_and_play_audit_addon
 ```
 
@@ -287,6 +287,16 @@ pip install -r requirements.txt
 ---
 
 ## 💻 Usage: Main Workflow
+
+### Sync Wallet & IDL (Important)
+
+Before submitting Merkle roots, make sure your wallet and program IDL are synced:
+
+```bash
+python scripts/sync.py
+```
+
+---
 
 ### Method 1: Web Interface (Recommended)
 
@@ -395,3 +405,4 @@ Each file contains up to 100 of the most recent events from their respective Win
 5. Open a Pull Request
 
 ---
+
